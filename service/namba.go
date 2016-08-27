@@ -2,7 +2,7 @@ package service
 
 import (
 	"encoding/json"
-	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/gen1us2k/log"
@@ -43,8 +43,29 @@ func (n *NambaService) Run() error {
 		if err != nil {
 			n.logger.Errorf("Got error while parsing data, %v", err)
 		}
-		fmt.Println(drivers)
+		for _, driver := range drivers.Drivers {
+			if driver.Lat == "0.0" || driver.Lon == "0.0" {
+				continue
+			}
+			lat, err := strconv.ParseFloat(driver.Lat, 64)
+			if err != nil {
+				n.logger.Errorf("Failed to convert lat to float, %v", err)
+			}
+			lng, err := strconv.ParseFloat(driver.Lon, 64)
+			if err != nil {
+				n.logger.Errorf("Failed to convert lon to float, %v", err)
+			}
+			sd := data.StorageDriver{
+				Company: "NambaTaxi",
+				Lat:     lat,
+				Lon:     lng,
+			}
+			err = common.SaveDriver(n.c.Config().StorageRootURL, sd)
 
+			if err != nil {
+				n.logger.Errorf("Failed to save driver, %v", err)
+			}
+		}
 	}
 	return nil
 }
