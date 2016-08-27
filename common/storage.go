@@ -5,20 +5,17 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 
 	"github.com/maddevsio/openfreecab-crawler/service/data"
 )
 
-func SaveDriver(storageUrl string, driver data.StorageDriver) error {
+func request(url string, reader io.Reader) error {
+
 	client := &http.Client{}
-	payload, err := json.Marshal(driver)
-	if err != nil {
-		return err
-	}
-	url := fmt.Sprintf("%s/add/", storageUrl)
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
+	req, err := http.NewRequest("POST", url, reader)
 	if err != nil {
 		return err
 	}
@@ -41,4 +38,16 @@ func SaveDriver(storageUrl string, driver data.StorageDriver) error {
 		return errors.New(response.Message)
 	}
 	return nil
+}
+
+func SaveDriver(storageUrl string, driver data.StorageDriver) error {
+	payload, err := json.Marshal(driver)
+	if err != nil {
+		return err
+	}
+	return request(fmt.Sprintf("%s/add/", storageUrl), bytes.NewBuffer(payload))
+}
+
+func CleanStorage(storageUrl, companyName string) error {
+	return request(fmt.Sprintf("%s/clean/%s/", storageUrl, companyName), nil)
 }
