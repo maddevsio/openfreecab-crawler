@@ -27,6 +27,8 @@ func NewCrawler(config *conf.CrawlerConfig) *Crawler {
 	os.services = make(map[string]Service)
 	os.AddService(&NambaService{})
 	os.AddService(&SmstaxiService{})
+	os.AddService(&PelikanService{})
+	os.AddService(&SmartTaxiService{})
 	return os
 }
 

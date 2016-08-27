@@ -12,6 +12,7 @@ func MakeRequestAndGetBytes(url, method string, reader io.Reader) ([]byte, error
 	if err != nil {
 		return nil, err
 	}
+	req.Header.Set("Content-length", "0")
 	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
