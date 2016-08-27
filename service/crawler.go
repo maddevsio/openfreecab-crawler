@@ -26,6 +26,7 @@ func NewCrawler(config *conf.CrawlerConfig) *Crawler {
 	os.logger = log.NewLogger("crawler")
 	os.services = make(map[string]Service)
 	os.AddService(&NambaService{})
+	os.AddService(&SmstaxiService{})
 	return os
 }
 
