@@ -30,6 +30,7 @@ func NewCrawler(config *conf.CrawlerConfig) *Crawler {
 	os.AddService(&PelikanService{})
 	os.AddService(&SmartTaxiService{})
 	os.AddService(&EstService{})
+	os.AddService(&JorgoTaxiService{})
 	return os
 }
 
