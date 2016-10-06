@@ -64,7 +64,7 @@ func (n *SmartTaxiService) updateDrivers() {
 	}
 	n.cs.Unlock()
 	for _, driver := range drivers.Data {
-		if driver.Lat == 0.0 || driver.Lng == 0.0 {
+		if driver.Lat == 0.0 || driver.Lng == 0.0 || !driver.IsFree {
 			continue
 		}
 		sd := data.StorageDriver{

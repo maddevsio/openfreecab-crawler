@@ -33,7 +33,7 @@ func (n *JorgoTaxiService) Init(c *Crawler) error {
 
 func (n *JorgoTaxiService) Run() error {
 	n.updateDrivers()
-	for range time.Tick(time.Duration(int64(n.c.Config().UpdateInterval)) * time.Second) {
+	for range time.Tick(time.Duration(int64(n.c.Config().UpdateInterval*3)) * time.Second) {
 		n.logger.Info("Requesting data")
 		n.updateDrivers()
 	}
