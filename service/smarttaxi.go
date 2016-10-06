@@ -35,14 +35,6 @@ func (n *SmartTaxiService) Run() error {
 	n.updateDrivers()
 	for range time.Tick(time.Duration(int64(n.c.Config().UpdateInterval)) * time.Second) {
 		n.logger.Info("Requesting data")
-		n.cs.Lock()
-		for _, companyName := range n.cs.Data {
-			err := common.CleanStorage(n.c.Config().StorageRootURL, companyName)
-			if err != nil {
-				n.logger.Errorf("Error while cleaning storage, %v", err)
-			}
-		}
-		n.cs.Unlock()
 		n.updateDrivers()
 	}
 	return nil
@@ -63,6 +55,14 @@ func (n *SmartTaxiService) updateDrivers() {
 	if err != nil {
 		n.logger.Errorf("Got error while parsing data, %v", err)
 	}
+	n.cs.Lock()
+	for _, companyName := range n.cs.Data {
+		err := common.CleanStorage(n.c.Config().StorageRootURL, companyName)
+		if err != nil {
+			n.logger.Errorf("Error while cleaning storage, %v", err)
+		}
+	}
+	n.cs.Unlock()
 	for _, driver := range drivers.Data {
 		if driver.Lat == 0.0 || driver.Lng == 0.0 {
 			continue

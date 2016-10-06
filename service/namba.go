@@ -33,10 +33,6 @@ func (n *NambaService) Run() error {
 	n.updateDrivers()
 	for range time.Tick(time.Duration(int64(n.c.Config().UpdateInterval)) * time.Second) {
 		n.logger.Info("Requesting data")
-		err := common.CleanStorage(n.c.Config().StorageRootURL, n.companyName)
-		if err != nil {
-			n.logger.Errorf("Error while cleaning storage, %v", err)
-		}
 		n.updateDrivers()
 	}
 	return nil
@@ -56,6 +52,10 @@ func (n *NambaService) updateDrivers() {
 	err = json.Unmarshal(driverData, &drivers)
 	if err != nil {
 		n.logger.Errorf("Got error while parsing data, %v", err)
+	}
+	err = common.CleanStorage(n.c.Config().StorageRootURL, n.companyName)
+	if err != nil {
+		n.logger.Errorf("Error while cleaning storage, %v", err)
 	}
 	for _, driver := range drivers.Drivers {
 		if driver.Lat == "0.0" || driver.Lon == "0.0" {

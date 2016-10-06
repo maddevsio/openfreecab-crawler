@@ -32,10 +32,6 @@ func (n *PelikanService) Run() error {
 	n.updateDrivers()
 	for range time.Tick(time.Duration(int64(n.c.Config().UpdateInterval)) * time.Second) {
 		n.logger.Info("Requesting data")
-		err := common.CleanStorage(n.c.Config().StorageRootURL, n.companyName)
-		if err != nil {
-			n.logger.Errorf("Error while cleaning storage, %v", err)
-		}
 		n.updateDrivers()
 	}
 	return nil
@@ -56,6 +52,10 @@ func (n *PelikanService) updateDrivers() {
 	if err != nil {
 		n.logger.Errorf("Got error while parsing data, %v", err)
 	}
+	err = common.CleanStorage(n.c.Config().StorageRootURL, n.companyName)
+	if err != nil {
+		n.logger.Errorf("Error while cleaning storage, %v", err)
+	}
 	for key, item := range drivers.Data {
 		if key == "drivers" {
 			continue
@@ -65,7 +65,7 @@ func (n *PelikanService) updateDrivers() {
 		lat := driver["lat"].(float64)
 		lng := driver["lng"].(float64)
 		available := driver["available"].(float64)
-		if lat == 0.00 || lng == 0.0 || available == 0.0 {
+		if lat == 0.00 || lng == 0.0 || available == 1.0 {
 			continue
 		}
 		sd := data.StorageDriver{
