@@ -1,0 +1,10 @@
+package: github.com/maddevsio/openfreecab-crawler
+import:
+- package: github.com/gen1us2k/log
+- package: github.com/urfave/cli
+  version: v1.19.1
+testImport:
+- package: github.com/stretchr/testify
+  version: v1.1.4
+  subpackages:
+  - assert
